@@ -144,8 +144,8 @@ echo "export PATH=\"\$HOME/vendor/node/bin:\$HOME/bin:\$HOME/node_modules/.bin:\
     if [ ! -f $build_dir/node_modules/.bin/grunt ]; then
       echo "-----> Found Gruntfile, but grunt-cli wasn't included in your package.json"
     else
-      echo "-----> Found Gruntfile, running grunt heroku:$NODE_ENV task"
-      $build_dir/node_modules/.bin/grunt heroku:$NODE_ENV
+      echo "-----> Found Gruntfile, running grunt heroku:production task"
+      $build_dir/node_modules/.bin/grunt heroku:production
     fi
   else
     echo "-----> No Gruntfile (grunt.js, Gruntfile.js, Gruntfile.coffee) found"
