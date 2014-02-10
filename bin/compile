@@ -132,20 +132,28 @@ status "Building runtime environment"
 mkdir -p $build_dir/.profile.d
 echo "export PATH=\"\$HOME/vendor/node/bin:\$HOME/bin:\$HOME/node_modules/.bin:\$PATH\";" > $build_dir/.profile.d/nodejs.sh
 
+# Check and run Bower
+(
+  if [ -f $build_dir/bower.json ]; then
+    if [ -f $build_dir/node_modules/.bin/bower ]; then
+      echo "-----> Found bower.json, running bower install task"
+      $build_dir/node_modules/.bin/bower install
+    else
+      echo "-----> Found bower.json, but bower wasn't included in your package.json"
+    fi
+  else
+    echo "-----> No Bower (bower.json) found"
+  fi
+)
+
 # Check and run Grunt
 (
   if [ -f $build_dir/grunt.js ] || [ -f $build_dir/Gruntfile.js ] || [ -f $build_dir/Gruntfile.coffee ]; then
-    # get the env vars
-    if [ -d "$env_dir" ]; then
-      status "Exporting config vars to environment"
-      export_env_dir $env_dir
-    fi
-    
-    if [ ! -f $build_dir/node_modules/.bin/grunt ]; then
-      echo "-----> Found Gruntfile, but grunt-cli wasn't included in your package.json"
-    else
+    if [ -f $build_dir/node_modules/.bin/grunt ]; then
       echo "-----> Found Gruntfile, running grunt heroku:production task"
       $build_dir/node_modules/.bin/grunt heroku:production
+    else
+      echo "-----> Found Gruntfile, but grunt-cli wasn't included in your package.json"
     fi
   else
     echo "-----> No Gruntfile (grunt.js, Gruntfile.js, Gruntfile.coffee) found"
